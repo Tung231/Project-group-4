@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <title>Thêm giao dịch</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 640px; margin: 40px auto; }
+    input, button, select { padding: 8px; margin: 6px 0; width: 100%; }
+    a { text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h2>Thêm giao dịch mới</h2>
+  <form method="POST">
+    <label>Loại giao dịch</label>
+    <select name="type">
+      <option value="income">Thu</option>
+      <option value="expense">Chi</option>
+    </select>
+
+    <label>Danh mục</label>
+    <input name="category" placeholder="VD: Ăn uống / Di chuyển / Học tập" required />
+
+    <label>Số tiền</label>
+    <input name="amount" type="number" step="0.01" placeholder="VD: 45000" required />
+
+    <button type="submit">Lưu</button>
+  </form>
+  <p><a href="/dashboard">⬅ Quay lại Dashboard</a></p>
+</body>
+</html>

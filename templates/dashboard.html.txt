@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <title>Bảng điều khiển</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; }
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .card { padding: 16px; border: 1px solid #ddd; border-radius: 8px; }
+    nav a { margin-right: 12px; }
+  </style>
+</head>
+<body>
+  <h2>Bảng điều khiển</h2>
+
+  <nav>
+    <a href="/add">➕ Thêm giao dịch</a>
+    <a href="/history">📜 Lịch sử</a>
+    <a href="/logout">🚪 Đăng xuất</a>
+  </nav>
+
+  <div class="cards">
+    <div class="card"><h3>Thu nhập</h3><p>{{ income }} VNĐ</p></div>
+    <div class="card"><h3>Chi tiêu</h3><p>{{ expense }} VNĐ</p></div>
+    <div class="card"><h3>Số dư</h3><p>{{ balance }} VNĐ</p></div>
+  </div>
+</body>
+</html>

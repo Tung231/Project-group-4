@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <title>Đăng nhập</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 640px; margin: 40px auto; }
+    input, button, select { padding: 8px; margin: 6px 0; width: 100%; }
+    a { text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h2>Đăng nhập</h2>
+  <form method="POST">
+    <input name="username" placeholder="Tên đăng nhập" required />
+    <input type="password" name="password" placeholder="Mật khẩu" required />
+    <button type="submit">Đăng nhập</button>
+  </form>
+  <p>Chưa có tài khoản? <a href="/register">Đăng ký</a></p>
+</body>
+</html>
