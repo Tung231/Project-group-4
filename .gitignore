@@ -20,3 +20,5 @@ database.db
 
 # Misc
 *.log
+
+!HW11.ipynb
