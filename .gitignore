@@ -1,24 +1,19 @@
-﻿# Python cache
-__pycache__/
-*.pyc
-
-# Virtual env
-venv/
-.venv/
-
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb
-
-# Streamlit
-.streamlit/
-
-# Databases
+# File Database
+# Ngăn chặn việc đẩy file CSDL cá nhân lên repo
 *.db
+*.sqlite
+*.sqlite3
 expense.db
-database.db
 
-# Misc
-*.log
+# Thư mục cache của Python
+__pycache__/
+*.py[cod]
 
-!HW11.ipynb
+# Thư mục môi trường ảo
+venv/
+ENV/
+env/
+.env
+
+# Thư mục cấu hình của Streamlit
+.streamlit/
