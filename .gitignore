@@ -1,19 +1,25 @@
 # File Database
 # Ngăn chặn việc đẩy file CSDL cá nhân lên repo
+# Khi các thành viên trong nhóm code và cập nhật code của mình, thì các file chứa dữ liệU cá nhân của họ sẽ k bị đẩY lên
+# Tránh gây lỗi 
+
 *.db
 *.sqlite
 *.sqlite3
 expense.db
 
 # Thư mục cache của Python
+# Các file này python tự sinh ra khi chạy code, egnore các file này k tải lên
 __pycache__/
 *.py[cod]
 
 # Thư mục môi trường ảo
+# Không bao giờ push môi trường ảo (virtual environment) lên GitHub.
 venv/
 ENV/
 env/
 .env
 
 # Thư mục cấu hình của Streamlit
+# Các file này chứa thông tin về API keys, mật khẩu, k đc up
 .streamlit/
