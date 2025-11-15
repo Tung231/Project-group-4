@@ -1,4 +1,15 @@
+# Danh sách thư viện bắt buộc để app chạy được
+# Khi một người clone project hoặc khi deploy lên server (Heroku, Streamlit Cloud, Render…),
+# hệ thống sẽ đọc file này và tự động cài đúng các thư viện cần thiết.
+
+# Thư viện chính để chạy web app
 streamlit
+
+# Xử lý dữ liệu bảng
 pandas
+
+# Vẽ biểu đồ tương tác
 altair
+
+# Xuất file Excel
 xlsxwriter
