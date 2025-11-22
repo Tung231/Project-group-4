@@ -90,3 +90,6 @@ USE_I18N = True
 USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Nơi gom các file CSS/JS khi chạy trên server thật
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
