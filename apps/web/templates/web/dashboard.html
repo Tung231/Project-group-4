@@ -1,0 +1,457 @@
+{% extends 'web/base.html' %} 
+{% block content %}
+<style>
+    /* Dashboard Header */
+    .dashboard-header {
+        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+    }
+
+    .dashboard-header h1 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 2rem;
+    }
+
+    .btn-new-transaction {
+        background: white;
+        color: #ff6b9d;
+        border: 2px solid white;
+        padding: 0.5rem 1.5rem;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-new-transaction:hover {
+        background: transparent;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* KPI Cards */
+    .kpi-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .kpi-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #ff6b9d, #ff8fab);
+    }
+
+    .kpi-card.income {
+        background: linear-gradient(135deg, #ff9ec5 0%, #ff6b9d 100%);
+        color: white;
+    }
+
+    .kpi-card.expense {
+        background: linear-gradient(135deg, #ff8fab 0%, #ffb3c6 100%);
+        color: white;
+    }
+
+    .kpi-card.net {
+        background: linear-gradient(135deg, #ffc0cb 0%, #ff9ec5 100%);
+        color: white;
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(255, 107, 157, 0.2);
+    }
+
+    /* Chart Cards */
+    .chart-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(255, 107, 157, 0.2);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        background: #ffe4e9;
+    }
+
+    .chart-card:hover {
+        box-shadow: 0 10px 30px rgba(255, 107, 157, 0.15);
+    }
+
+    .chart-card .card-header {
+        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+        color: white;
+        border: none;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+    }
+
+    /* Table */
+    .table-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(255, 107, 157, 0.2);
+        overflow: hidden;
+        background: #ffe4e9;
+    }
+
+    .table-card .card-header {
+        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+        color: white;
+        border: none;
+        padding: 1rem 1.5rem;
+    }
+
+    .table thead {
+        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+        color: white;
+    }
+
+    .table tbody tr:hover {
+        background: #ffb3c6;
+    }
+
+    .badge.bg-success {
+        background: linear-gradient(135deg, #ff9ec5 0%, #ff6b9d 100%) !important;
+    }
+
+    .badge.bg-danger {
+        background: linear-gradient(135deg, #ff8fab 0%, #ffb3c6 100%) !important;
+    }
+
+    /* Modal */
+    .modal-content {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+        color: white;
+        border-radius: 20px 20px 0 0;
+        padding: 1.5rem;
+        border: none;
+    }
+
+    .modal-title {
+        font-weight: 600;
+        font-size: 1.5rem;
+    }
+
+    .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #ff6b9d;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #ff6b9d;
+        box-shadow: 0 0 0 0.2rem rgba(255, 107, 157, 0.25);
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+        border: none;
+        padding: 0.75rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+        color: white;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(255, 107, 157, 0.4);
+        color: white;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="dashboard-header d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+    <h1>📊 Dashboard</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <button type="button" class="btn btn-new-transaction" data-bs-toggle="modal" data-bs-target="#addTxModal">
+            + New Transaction
+        </button>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card kpi-card income mb-3 h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">Total Income</h5>
+                <h2 class="display-6 fw-bold" id="kpi-income">0</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card kpi-card expense mb-3 h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">Total Expense</h5>
+                <h2 class="display-6 fw-bold" id="kpi-expense">0</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card kpi-card net mb-3 h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">Net Balance</h5>
+                <h2 class="display-6 fw-bold" id="kpi-net">0</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card chart-card h-100">
+            <div class="card-header">Daily Spending (Last 30 Days)</div>
+            <div class="card-body">
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="dailyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card chart-card h-100">
+            <div class="card-header">Expense by Category</div>
+            <div class="card-body">
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="catChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card table-card">
+    <div class="card-header">
+        <h5 class="mb-0">Recent Transactions</h5>
+    </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                        <th>Account</th>
+                        <th>Amount</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody id="tx-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addTxModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Transaction</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <form id="add-tx-form">
+                        <div class="mb-3">
+                            <label class="form-label">Type</label>
+                            <select class="form-select" id="tx-type">
+                                <option value="expense">Expense</option>
+                                <option value="income">Income</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="tx-amount" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" id="tx-category"></select>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Account</label>
+                                <select class="form-select" id="tx-account"></select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Note</label>
+                            <input type="text" class="form-control" id="tx-note">
+                        </div>
+                        <button type="submit" class="btn btn-submit w-100">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %} {% block scripts %}
+    <script>
+        let dailyChartInstance = null;
+        let catChartInstance = null;
+
+        // --- HÀM VẼ BIỂU ĐỒ ---
+        function renderCharts(dailyData, catData) {
+            // 1. Vẽ biểu đồ đường (Daily)
+            const ctxDaily = document.getElementById('dailyChart');
+            if (dailyChartInstance) dailyChartInstance.destroy(); // Xóa biểu đồ cũ nếu có
+
+            dailyChartInstance = new Chart(ctxDaily, {
+                type: 'bar', // Hoặc 'line'
+                data: {
+                    labels: dailyData.map(d => d.date), // Ngày tháng
+                    datasets: [{
+                        label: 'Expense (VND)',
+                        data: dailyData.map(d => d.total), // Số tiền
+                        backgroundColor: '#ff6b9d',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // 2. Vẽ biểu đồ tròn (Category)
+            const ctxCat = document.getElementById('catChart');
+            if (catChartInstance) catChartInstance.destroy();
+
+            catChartInstance = new Chart(ctxCat, {
+                type: 'doughnut', // Hoặc 'pie'
+                data: {
+                    labels: catData.map(c => c.category_name || 'Other'),
+                    datasets: [{
+                        data: catData.map(c => c.total),
+                        backgroundColor: ['#ff6b9d', '#ff8fab', '#ff9ec5', '#ffb3c6', '#ffc0cb', '#ffe4e9'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // --- HÀM LOAD DATA (Đã nâng cấp để gọi API Chart) ---
+        async function loadDashboard() {
+            // Load KPI (Cũ)
+            const kpiRes = await fetch('/api/finance/transactions/kpi/', {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            });
+            const kpiData = await kpiRes.json();
+            document.getElementById('kpi-income').innerText = Number(kpiData.income).toLocaleString();
+            document.getElementById('kpi-expense').innerText = Number(kpiData.expense).toLocaleString();
+            document.getElementById('kpi-net').innerText = Number(kpiData.net).toLocaleString();
+
+            // Load CHARTS (Mới) -> Gọi API Charts ta vừa viết
+            const chartRes = await fetch('/api/finance/transactions/charts/', {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            });
+            if (chartRes.ok) {
+                const chartData = await chartRes.json();
+                renderCharts(chartData.daily, chartData.category);
+            }
+
+            // Load LIST (Cũ)
+            const txRes = await fetch('/api/finance/transactions/', {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            });
+            const txData = await txRes.json();
+            const tbody = document.getElementById('tx-table-body');
+            tbody.innerHTML = '';
+            if (txData.results) {
+                txData.results.forEach(tx => {
+                    const typeBadge = tx.type === 'income' ? 'bg-success' : 'bg-danger';
+                    tbody.innerHTML += `<tr><td>${new Date(tx.occurred_at).toLocaleDateString()}</td><td><span class="badge ${typeBadge}">${tx.type}</span></td><td>${tx.category_name || '-'}</td><td>${tx.account_name}</td><td class="fw-bold">${Number(tx.amount).toLocaleString()}</td><td>${tx.notes || ''}</td></tr>`;
+                });
+            }
+        }
+
+        // --- GIỮ NGUYÊN LOGIC DROPDOWN & SUBMIT FORM CŨ Ở ĐÂY (Copy lại từ bản trước) ---
+        // (Tôi lược bớt đoạn này để code đỡ dài, bạn giữ nguyên phần loadDropdowns và form submit nhé)
+        async function loadDropdowns() {
+            const catRes = await fetch('/api/finance/categories/', {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            });
+            const catData = await catRes.json();
+            const catSelect = document.getElementById('tx-category');
+            catSelect.innerHTML = '<option value="">-- Select --</option>';
+            catData.results.forEach(c => catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+
+            const accRes = await fetch('/api/finance/accounts/', {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            });
+            const accData = await accRes.json();
+            const accSelect = document.getElementById('tx-account');
+            accSelect.innerHTML = '<option value="">-- Select --</option>';
+            accData.results.forEach(a => accSelect.innerHTML += `<option value="${a.id}">${a.name}</option>`);
+        }
+
+        document.getElementById('add-tx-form').addEventListener('submit', async(e) => {
+            e.preventDefault();
+            const payload = {
+                type: document.getElementById('tx-type').value,
+                amount: document.getElementById('tx-amount').value,
+                category: document.getElementById('tx-category').value || null,
+                account: document.getElementById('tx-account').value,
+                notes: document.getElementById('tx-note').value,
+                occurred_at: new Date().toISOString()
+            };
+            const res = await fetch('/api/finance/transactions/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`
+                },
+                body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('addTxModal')).hide();
+                document.getElementById('add-tx-form').reset();
+                loadDashboard();
+            } else {
+                alert('Error adding transaction');
+            }
+        });
+
+        loadDashboard();
+        loadDropdowns();
+    </script>
+    {% endblock %}
