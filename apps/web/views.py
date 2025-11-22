@@ -21,3 +21,8 @@ def budgets_view(request):
 
 def landing_page_view(request):
     return render(request, 'web/landingpage.html')
+
+# ...
+def transactions_view(request):
+    return render(request, 'web/transactions.html')
+# ...

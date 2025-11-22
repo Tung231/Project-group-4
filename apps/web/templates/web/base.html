@@ -16,28 +16,28 @@
             margin-bottom: 20px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-
+        
         .navbar {
             background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%) !important;
             box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
         }
-
+        
         .navbar-brand {
             font-weight: 600;
             font-size: 1.5rem;
         }
-
+        
         .nav-link {
             transition: all 0.3s ease;
             font-weight: 500;
         }
-
+        
         .nav-link:hover {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             transform: translateY(-2px);
         }
-
+        
         #btn-logout {
             background: white;
             color: #ff6b9d;
@@ -45,7 +45,7 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-
+        
         #btn-logout:hover {
             background: transparent;
             color: white;
@@ -58,24 +58,28 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark mb-4">
         <div class="container">
-            <a class="navbar-brand" href="/">💸 Expense Manager</a>
+            <a class="navbar-brand" href="/dashboard/">💸 Expense Manager</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Dashboard</a>
+                        <a class="nav-link" href="/dashboard/">Dashboard</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/transactions/">Transactions</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/accounts/">Ví/Tài khoản</a>
+                        <a class="nav-link" href="/accounts/">Wallets</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/categories/">Danh mục</a>
+                        <a class="nav-link" href="/categories/">Categories</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/budgets/">Ngân sách</a>
+                        <a class="nav-link" href="/budgets/">Budgets</a>
                     </li>
                 </ul>
 
@@ -97,23 +101,26 @@
         const token = localStorage.getItem('token');
         const currentPath = window.location.pathname;
 
-        // Chưa đăng nhập thì đá về trang login
-        if (!token && !currentPath.includes('/login/')) {
+        // Logic bảo vệ: Nếu chưa có token (chưa đăng nhập)
+        // VÀ không phải đang ở các trang công khai (Login, Register, Landing Page)
+        // THÌ đá về trang Login ngay lập tức
+        if (!token && !currentPath.includes('/login/') && !currentPath.includes('/register/') && currentPath !== '/') {
             window.location.href = '/login/';
         }
 
-        // Hiển thị tên user
+        // Hiển thị tên user trên thanh menu
         const username = localStorage.getItem('username');
         if (username) {
             document.getElementById('user-display').innerText = `Hi, ${username}`;
         }
 
-        // Nút logout
+        // Xử lý nút Logout
         document.getElementById('btn-logout').addEventListener('click', () => {
-            localStorage.clear();
-            window.location.href = '/login/';
+            localStorage.clear(); // Xóa token
+            window.location.href = '/login/'; // Về trang đăng nhập
         });
     </script>
+
     {% block scripts %}{% endblock %}
 </body>
 

@@ -8,9 +8,14 @@ class AccountSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'type', 'currency', 'initial_balance', 'current_balance', 'is_active']
 
 class CategorySerializer(serializers.ModelSerializer):
+    # --- MỞ CỔNG CHO 2 TRƯỜNG NÀY ---
+    month_spent = serializers.DecimalField(max_digits=15, decimal_places=0, read_only=True)
+    budget_limit = serializers.DecimalField(max_digits=15, decimal_places=0, read_only=True)
+
     class Meta:
         model = Category
-        fields = ['id', 'name', 'type', 'parent', 'is_active']
+        # Nhớ thêm tên của chúng vào danh sách fields
+        fields = ['id', 'name', 'type', 'parent', 'is_active', 'month_spent', 'budget_limit']
 
 class TransactionSerializer(serializers.ModelSerializer):
     category_name = serializers.ReadOnlyField(source='category.name')
@@ -23,7 +28,6 @@ class TransactionSerializer(serializers.ModelSerializer):
         read_only_fields = ['user']
 
     def validate(self, data):
-        # Logic: Nếu là chuyển khoản thì bắt buộc phải có ví đích và khác ví nguồn
         if data.get('type') == 'transfer':
             if not data.get('destination_account'):
                 raise serializers.ValidationError({"destination_account": "Required for transfers."})

@@ -54,7 +54,7 @@ class Transaction(models.Model):
     # Ví đích (Chỉ dùng khi chuyển khoản)
     destination_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions_received')
     
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions')
     type = models.CharField(max_length=20, choices=TYPE_CHOICES)
     amount = models.DecimalField(max_digits=15, decimal_places=0)
     notes = models.TextField(blank=True, null=True)
@@ -68,7 +68,8 @@ class Transaction(models.Model):
 class Budget(models.Model):
     PERIOD_CHOICES = [('weekly', 'Weekly'), ('monthly', 'Monthly')]
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    # Tìm dòng category cũ và thay bằng dòng này:
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='budgets')
     amount = models.DecimalField(max_digits=15, decimal_places=0)
     period = models.CharField(max_length=20, choices=PERIOD_CHOICES, default='monthly')
     created_at = models.DateTimeField(auto_now_add=True)

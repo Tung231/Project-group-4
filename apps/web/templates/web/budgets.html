@@ -1,192 +1,35 @@
-{% extends 'web/base.html' %} 
-{% block content %}
-<style>
-    .page-header {
-        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-        color: white;
-        padding: 2rem;
-        border-radius: 15px;
-        margin-bottom: 2rem;
-        box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
-    }
-
-    .page-header h2 {
-        margin: 0;
-        font-weight: 600;
-        font-size: 2rem;
-    }
-
-    .btn-add-budget {
-        background: white;
-        color: #ff6b9d;
-        border: 2px solid white;
-        padding: 0.75rem 2rem;
-        font-weight: 600;
-        border-radius: 50px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-add-budget:hover {
-        background: transparent;
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .budget-card {
-        border: none;
-        border-radius: 20px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 20px rgba(255, 107, 157, 0.2);
-        background: #ffe4e9;
-        position: relative;
-    }
-
-    .budget-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 5px;
-        background: linear-gradient(90deg, #ff6b9d, #ff8fab);
-    }
-
-    .budget-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(255, 107, 157, 0.15);
-    }
-
-    .budget-card .card-body {
-        padding: 2rem;
-    }
-
-    .budget-card .card-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #ff6b9d;
-        margin-bottom: 1rem;
-    }
-
-    .budget-card .card-text {
-        color: #ff6b9d;
-        font-size: 1.1rem;
-    }
-
-    .budget-card .card-text strong {
-        color: #ff6b9d;
-        font-size: 1.3rem;
-    }
-
-    .btn-outline-danger {
-        border-color: #ff6b9d;
-        color: #ff6b9d;
-        transition: all 0.3s ease;
-    }
-
-    .btn-outline-danger:hover {
-        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-        border-color: #ff6b9d;
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    .modal-content {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    }
-
-    .modal-header {
-        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-        color: white;
-        border-radius: 20px 20px 0 0;
-        padding: 1.5rem;
-        border: none;
-    }
-
-    .modal-title {
-        font-weight: 600;
-        font-size: 1.5rem;
-    }
-
-    .btn-close {
-        filter: brightness(0) invert(1);
-    }
-
-    .modal-body {
-        padding: 2rem;
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: #ff6b9d;
-        margin-bottom: 0.5rem;
-    }
-
-    .form-control, .form-select {
-        border: 2px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 0.75rem 1rem;
-        transition: all 0.3s ease;
-    }
-
-    .form-control:focus, .form-select:focus {
-        border-color: #ff6b9d;
-        box-shadow: 0 0 0 0.2rem rgba(255, 107, 157, 0.25);
-    }
-
-    .btn-submit {
-        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-        border: none;
-        padding: 0.75rem;
-        border-radius: 10px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        margin-top: 1rem;
-        color: white;
-    }
-
-    .btn-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(255, 107, 157, 0.4);
-        color: white;
-    }
-</style>
-<div class="page-header d-flex justify-content-between align-items-center">
-    <h2>🎯 Quản lý Ngân sách (Budgets)</h2>
-    <button class="btn btn-add-budget" data-bs-toggle="modal" data-bs-target="#addBudgetModal">+ Tạo Ngân sách</button>
+{% extends 'web/base.html' %} {% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🎯 Budget Management</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBudgetModal">
+        <i class="bi bi-plus-circle"></i> + Create Budget
+    </button>
 </div>
 
-<div class="row" id="budget-list"></div>
+<div class="row" id="budget-list">
+    <div class="text-center mt-5">
+        <div class="spinner-border text-primary"></div>
+    </div>
+</div>
 
 <div class="modal fade" id="addBudgetModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Tạo Ngân sách Mới</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <h5 class="modal-title">Create New Budget</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <form id="add-budget-form">
-                    <div class="mb-3">
-                        <label class="form-label">Danh mục áp dụng</label>
-                        <select class="form-select" id="budget-cat" required>
-                            <option>Loading...</option>
-                        </select>
+                    <div class="mb-3"><label class="form-label">Category</label>
+                        <select class="form-select" id="budget-cat" required><option>Loading...</option></select>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Hạn mức (VND)</label>
-                        <input type="number" class="form-control" id="budget-amount" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Chu kỳ</label>
+                    <div class="mb-3"><label class="form-label">Limit Amount (VND)</label><input type="number" class="form-control" id="budget-amount" required></div>
+                    <div class="mb-3"><label class="form-label">Period</label>
                         <select class="form-select" id="budget-period">
-                            <option value="monthly">Hàng tháng</option>
-                            <option value="weekly">Hàng tuần</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="weekly">Weekly</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-submit w-100">Lưu</button>
+                    <button type="submit" class="btn btn-primary w-100">Save Budget</button>
                 </form>
             </div>
         </div>
@@ -195,45 +38,63 @@
 {% endblock %} {% block scripts %}
 <script>
     async function loadBudgets() {
-        // 1. Lấy danh sách Budget
-        const res = await fetch('/api/finance/budgets/', {
-            headers: {
-                'Authorization': `Token ${token}`
+        try {
+            // 1. Get Budgets
+            const res = await fetch('/api/finance/budgets/', {
+                headers: {
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                }
+            });
+            const data = await res.json();
+
+            // 2. Get Categories for Dropdown
+            const catRes = await fetch('/api/finance/categories/?type=expense', {
+                headers: {
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                }
+            });
+            const catData = await catRes.json();
+
+            // Fill Dropdown
+            const catSelect = document.getElementById('budget-cat');
+            catSelect.innerHTML = '';
+            if (catData.results) {
+                catData.results.forEach(c => catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`);
             }
-        });
-        const data = await res.json();
 
-        // 2. Lấy danh sách Category để điền vào Dropdown
-        const catRes = await fetch('/api/finance/categories/?type=expense', {
-            headers: {
-                'Authorization': `Token ${token}`
+            // Fill List
+            const container = document.getElementById('budget-list');
+            container.innerHTML = '';
+            if (data.results && data.results.length > 0) {
+                data.results.forEach(b => {
+                    let periodLabel = b.period === 'monthly' ? 'Monthly' : 'Weekly';
+                    container.innerHTML += `
+                        <div class="col-md-6 mb-4">
+                            <div class="card shadow-sm h-100 border-0">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <h5 class="card-title fw-bold text-primary mb-1">${b.category_name}</h5>
+                                            <span class="badge bg-light text-dark border">Category</span>
+                                        </div>
+                                        <span class="badge bg-info text-dark">${periodLabel}</span>
+                                    </div>
+                                    
+                                    <h3 class="mb-3">${Number(b.amount).toLocaleString()} <small class="fs-6 text-muted">VND</small></h3>
+                                    
+                                    <div class="d-grid">
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteBudget(${b.id})">Delete Budget</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+            } else {
+                container.innerHTML = '<div class="alert alert-info text-center w-100">No budgets set. Create one to track your spending!</div>';
             }
-        });
-        const catData = await catRes.json();
-
-        // Fill Dropdown
-        const catSelect = document.getElementById('budget-cat');
-        catSelect.innerHTML = '';
-        catData.results.forEach(c => {
-            catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-        });
-
-        // Fill List
-        const container = document.getElementById('budget-list');
-        container.innerHTML = '';
-        data.results.forEach(b => {
-            container.innerHTML += `
-                <div class="col-md-6 mb-4">
-                    <div class="card budget-card">
-                        <div class="card-body">
-                            <h5 class="card-title">Danh mục: ${b.category_name}</h5>
-                            <p class="card-text">Hạn mức: <strong>${Number(b.amount).toLocaleString()} VND</strong> / ${b.period}</p>
-                            <button class="btn btn-sm btn-outline-danger" onclick="deleteBudget(${b.id})">Xóa</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     document.getElementById('add-budget-form').addEventListener('submit', async(e) => {
@@ -247,26 +108,26 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`
+                'Authorization': `Token ${localStorage.getItem('token')}`
             },
             body: JSON.stringify(payload)
         });
         if (res.ok) {
             location.reload();
         } else {
-            alert('Lỗi tạo ngân sách');
+            alert('Error creating budget');
         }
     });
 
     async function deleteBudget(id) {
-        if (!confirm('Xóa ngân sách này?')) return;
-        await fetch(`/api/finance/budgets/${id}/`, {
+        if (!confirm('Delete this budget?')) return;
+        const res = await fetch(`/api/finance/budgets/${id}/`, {
             method: 'DELETE',
             headers: {
-                'Authorization': `Token ${token}`
+                'Authorization': `Token ${localStorage.getItem('token')}`
             }
         });
-        loadBudgets();
+        if (res.ok) loadBudgets();
     }
     loadBudgets();
 </script>

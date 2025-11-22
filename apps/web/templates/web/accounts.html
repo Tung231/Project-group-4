@@ -1,272 +1,57 @@
-{% extends 'web/base.html' %} 
-{% block content %}
+{% extends 'web/base.html' %} {% block content %}
 <style>
-    /* Container và Layout */
-    .accounts-container {
-        padding: 2rem 0;
-    }
-
-    .page-header {
-        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-        color: white;
-        padding: 2rem;
-        border-radius: 15px;
-        margin-bottom: 2rem;
-        box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
-    }
-
-    .page-header h2 {
-        margin: 0;
-        font-weight: 600;
-        font-size: 2rem;
-    }
-
-    /* Button Styles */
-    .btn-add-account {
-        background: white;
-        color: #ff6b9d;
-        border: 2px solid white;
-        padding: 0.75rem 2rem;
-        font-weight: 600;
-        border-radius: 50px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-add-account:hover {
-        background: transparent;
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    /* Card Styles */
     .account-card {
+        transition: transform 0.2s;
         border: none;
-        border-radius: 20px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 20px rgba(255, 107, 157, 0.2);
-        background: #ffe4e9;
-        position: relative;
     }
-
+    
     .account-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        transform: translateY(-5px);
     }
-
-    .account-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 5px;
-        background: linear-gradient(90deg, #ff6b9d, #ff8fab);
+    
+    .border-bank {
+        border-left: 5px solid #198754 !important;
     }
-
-    .account-card.cash::before {
-        background: linear-gradient(90deg, #ff9ec5 0%, #ff6b9d 100%);
+    
+    .border-cash {
+        border-left: 5px solid #0d6efd !important;
     }
-
-    .account-card.bank::before {
-        background: linear-gradient(90deg, #ff8fab 0%, #ffb3c6 100%);
-    }
-
-    .account-card.e-wallet::before {
-        background: linear-gradient(90deg, #ffc0cb 0%, #ff9ec5 100%);
-    }
-
-    .card-body {
-        padding: 2rem;
-    }
-
-    .card-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #ff6b9d;
-        margin-bottom: 0.5rem;
-    }
-
-    .card-subtitle {
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        padding: 0.5rem 1rem;
-        background: #ffe4e9;
-        border-radius: 20px;
-        display: inline-block;
-        margin-bottom: 1rem;
-    }
-
-    .balance-amount {
-        font-size: 2.5rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin: 1rem 0;
-    }
-
-    .btn-delete {
-        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-        border: none;
-        color: white;
-        padding: 0.5rem 1.5rem;
-        border-radius: 25px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
-    }
-
-    .btn-delete:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
-        color: white;
-    }
-
-    /* Modal Styles */
-    .modal-content {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    }
-
-    .modal-header {
-        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-        color: white;
-        border-radius: 20px 20px 0 0;
-        padding: 1.5rem;
-        border: none;
-    }
-
-    .modal-title {
-        font-weight: 600;
-        font-size: 1.5rem;
-    }
-
-    .btn-close {
-        filter: brightness(0) invert(1);
-    }
-
-    .modal-body {
-        padding: 2rem;
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: #ff6b9d;
-        margin-bottom: 0.5rem;
-    }
-
-    .form-control, .form-select {
-        border: 2px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 0.75rem 1rem;
-        transition: all 0.3s ease;
-    }
-
-    .form-control:focus, .form-select:focus {
-        border-color: #ff6b9d;
-        box-shadow: 0 0 0 0.2rem rgba(255, 107, 157, 0.25);
-    }
-
-    .btn-submit {
-        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-        border: none;
-        padding: 0.75rem;
-        border-radius: 10px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        margin-top: 1rem;
-    }
-
-    .btn-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(255, 107, 157, 0.4);
-    }
-
-    /* Empty State */
-    #account-list:empty::before {
-        content: 'Chưa có ví nào. Hãy thêm ví đầu tiên của bạn!';
-        display: block;
-        text-align: center;
-        padding: 4rem 2rem;
-        color: #ff6b9d;
-        font-size: 1.2rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .page-header {
-            padding: 1.5rem;
-        }
-
-        .page-header h2 {
-            font-size: 1.5rem;
-        }
-
-        .btn-add-account {
-            padding: 0.5rem 1.5rem;
-            font-size: 0.9rem;
-        }
-
-        .balance-amount {
-            font-size: 2rem;
-        }
-    }
-
-    /* Animation */
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .account-card {
-        animation: fadeIn 0.5s ease;
+    
+    .border-ewallet {
+        border-left: 5px solid #0dcaf0 !important;
     }
 </style>
-<div class="page-header d-flex justify-content-between align-items-center">
-    <h2>💰 Quản lý Ví / Tài khoản</h2>
-    <button class="btn btn-add-account" data-bs-toggle="modal" data-bs-target="#addAccountModal">+ Thêm Ví</button>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>💰 Wallet Management</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+        <i class="bi bi-plus-circle"></i> + Add Wallet
+    </button>
 </div>
 
 <div class="row" id="account-list">
+    <div class="text-center mt-5">
+        <div class="spinner-border text-primary"></div>
+    </div>
 </div>
 
 <div class="modal fade" id="addAccountModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Thêm Ví Mới</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <h5 class="modal-title">Add New Wallet</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <form id="add-acc-form">
-                    <div class="mb-3">
-                        <label class="form-label">Tên Ví</label>
-                        <input type="text" class="form-control" id="acc-name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Loại</label>
+                    <div class="mb-3"><label class="form-label">Wallet Name</label><input type="text" class="form-control" id="acc-name" required placeholder="e.g. Cash, Chase Bank..."></div>
+                    <div class="mb-3"><label class="form-label">Type</label>
                         <select class="form-select" id="acc-type">
-                            <option value="cash">Tiền mặt</option>
-                            <option value="bank">Ngân hàng</option>
-                            <option value="e-wallet">Ví điện tử</option>
+                            <option value="cash">Cash</option>
+                            <option value="bank">Bank Account</option>
+                            <option value="e-wallet">E-Wallet</option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Số dư ban đầu</label>
-                        <input type="number" class="form-control" id="acc-balance" value="0">
-                    </div>
-                    <button type="submit" class="btn btn-submit w-100">Lưu</button>
+                    <div class="mb-3"><label class="form-label">Initial Balance (VND)</label><input type="number" class="form-control" id="acc-balance" value="0" required></div>
+                    <button type="submit" class="btn btn-primary w-100">Save Wallet</button>
                 </form>
             </div>
         </div>
@@ -275,31 +60,45 @@
 {% endblock %} {% block scripts %}
 <script>
     async function loadAccounts() {
-        const res = await fetch('/api/finance/accounts/', {
-            headers: {
-                'Authorization': `Token ${token}`
-            }
-        });
-        const data = await res.json();
-        const container = document.getElementById('account-list');
-        container.innerHTML = '';
+        try {
+            const res = await fetch('/api/finance/accounts/', {
+                headers: {
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                }
+            });
+            const data = await res.json();
+            const container = document.getElementById('account-list');
+            container.innerHTML = '';
 
-        data.results.forEach(acc => {
-            const typeClass = acc.type === 'cash' ? 'cash' : acc.type === 'bank' ? 'bank' : 'e-wallet';
-            const typeLabel = acc.type === 'cash' ? 'Tiền mặt' : acc.type === 'bank' ? 'Ngân hàng' : 'Ví điện tử';
-            container.innerHTML += `
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 account-card ${typeClass}">
-                        <div class="card-body">
-                            <h5 class="card-title">${acc.name}</h5>
-                            <h6 class="card-subtitle">${typeLabel}</h6>
-                            <div class="balance-amount">${Number(acc.current_balance).toLocaleString()} VND</div>
-                            <button class="btn btn-delete" onclick="deleteAccount(${acc.id})">Xóa</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
+            if (data.results && data.results.length > 0) {
+                data.results.forEach(acc => {
+                    let typeLabel = acc.type === 'cash' ? 'Cash' : (acc.type === 'bank' ? 'Bank' : 'E-Wallet');
+                    let borderClass = acc.type === 'bank' ? 'border-bank' : (acc.type === 'e-wallet' ? 'border-ewallet' : 'border-cash');
+
+                    container.innerHTML += `
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 shadow-sm ${borderClass} account-card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h5 class="card-title fw-bold mb-1">${acc.name}</h5>
+                                            <span class="badge bg-secondary">${typeLabel}</span>
+                                        </div>
+                                        <h4 class="text-primary mb-0 align-self-center">${Number(acc.current_balance).toLocaleString()} ₫</h4>
+                                    </div>
+                                    <div class="mt-3 text-end border-top pt-2">
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteAccount(${acc.id})">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+            } else {
+                container.innerHTML = '<div class="alert alert-info text-center">No wallets found. Please add your first wallet!</div>';
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     document.getElementById('add-acc-form').addEventListener('submit', async(e) => {
@@ -313,28 +112,27 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`
+                'Authorization': `Token ${localStorage.getItem('token')}`
             },
             body: JSON.stringify(payload)
         });
         if (res.ok) {
             location.reload();
         } else {
-            alert('Lỗi thêm ví');
+            alert('Error adding wallet.');
         }
     });
 
     async function deleteAccount(id) {
-        if (!confirm('Bạn chắc chắn muốn xóa ví này?')) return;
-        await fetch(`/api/finance/accounts/${id}/`, {
+        if (!confirm('Are you sure? Transactions related to this wallet might be affected.')) return;
+        const res = await fetch(`/api/finance/accounts/${id}/`, {
             method: 'DELETE',
             headers: {
-                'Authorization': `Token ${token}`
+                'Authorization': `Token ${localStorage.getItem('token')}`
             }
         });
-        loadAccounts();
+        if (res.ok) loadAccounts();
     }
-
     loadAccounts();
 </script>
 {% endblock %}

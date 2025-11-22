@@ -1,268 +1,248 @@
-{% extends 'web/base.html' %} 
-{% block content %}
-<style>
-    .page-header {
-        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-        color: white;
-        padding: 2rem;
-        border-radius: 15px;
-        margin-bottom: 2rem;
-        box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
-    }
-
-    .page-header h2 {
-        margin: 0;
-        font-weight: 600;
-        font-size: 2rem;
-    }
-
-    .btn-add-category {
-        background: white;
-        color: #ff6b9d;
-        border: 2px solid white;
-        padding: 0.75rem 2rem;
-        font-weight: 600;
-        border-radius: 50px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-add-category:hover {
-        background: transparent;
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .table-card {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 5px 20px rgba(255, 107, 157, 0.2);
-        overflow: hidden;
-        background: #ffe4e9;
-    }
-
-    .table thead {
-        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-        color: white;
-    }
-
-    .table tbody tr {
-        transition: all 0.3s ease;
-    }
-
-    .table tbody tr:hover {
-        background: #ffb3c6;
-        transform: scale(1.01);
-    }
-
-    .badge.bg-success {
-        background: linear-gradient(135deg, #ff9ec5 0%, #ff6b9d 100%) !important;
-    }
-
-    .badge.bg-danger {
-        background: linear-gradient(135deg, #ff8fab 0%, #ffb3c6 100%) !important;
-    }
-
-    .btn-outline-danger {
-        border-color: #ff6b9d;
-        color: #ff6b9d;
-        transition: all 0.3s ease;
-    }
-
-    .btn-outline-danger:hover {
-        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-        border-color: #ff6b9d;
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    .modal-content {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    }
-
-    .modal-header {
-        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-        color: white;
-        border-radius: 20px 20px 0 0;
-        padding: 1.5rem;
-        border: none;
-    }
-
-    .modal-title {
-        font-weight: 600;
-        font-size: 1.5rem;
-    }
-
-    .btn-close {
-        filter: brightness(0) invert(1);
-    }
-
-    .modal-body {
-        padding: 2rem;
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: #ff6b9d;
-        margin-bottom: 0.5rem;
-    }
-
-    .form-control, .form-select {
-        border: 2px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 0.75rem 1rem;
-        transition: all 0.3s ease;
-    }
-
-    .form-control:focus, .form-select:focus {
-        border-color: #ff6b9d;
-        box-shadow: 0 0 0 0.2rem rgba(255, 107, 157, 0.25);
-    }
-
-    .btn-submit {
-        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-        border: none;
-        padding: 0.75rem;
-        border-radius: 10px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        margin-top: 1rem;
-        color: white;
-    }
-
-    .btn-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(255, 107, 157, 0.4);
-        color: white;
-    }
-</style>
-<div class="page-header d-flex justify-content-between align-items-center">
-    <h2>🏷️ Quản lý Danh mục</h2>
-    <button class="btn btn-add-category" data-bs-toggle="modal" data-bs-target="#addCatModal">+ Thêm Danh mục</button>
+{% extends 'web/base.html' %} {% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🏷️ Category Management</h2>
+    <button class="btn btn-primary" onclick="openAddModal()">
+        <i class="bi bi-plus-circle"></i> + Add Category
+    </button>
 </div>
 
-<div class="table-card">
-    <table class="table table-hover mb-0">
-        <thead>
-            <tr>
-                <th>Tên</th>
-                <th>Loại</th>
-                <th>Thuộc nhóm (Cha)</th>
-                <th>Hành động</th>
-            </tr>
-        </thead>
-        <tbody id="cat-list"></tbody>
-    </table>
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-4">Name</th>
+                    <th>Type</th>
+                    <th>Spent (This Month)</th>
+                    <th>Budget Status</th>
+                    <th class="text-end pe-4">Action</th>
+                </tr>
+            </thead>
+            <tbody id="cat-list">
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<div class="modal fade" id="addCatModal" tabindex="-1">
+<div class="modal fade" id="catModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Thêm Danh mục</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <h5 class="modal-title" id="modal-title">Add Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
             <div class="modal-body">
-                <form id="add-cat-form">
+                <form id="cat-form">
+                    <input type="hidden" id="cat-id">
                     <div class="mb-3">
-                        <label class="form-label">Tên Danh mục</label>
-                        <input type="text" class="form-control" id="cat-name" required>
+                        <label class="form-label">Category Name</label>
+                        <input type="text" class="form-control" id="cat-name" required placeholder="e.g. Food, salary...">
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label">Loại</label>
+                        <label class="form-label">Type</label>
                         <select class="form-select" id="cat-type">
-                            <option value="expense">Chi tiêu</option>
-                            <option value="income">Thu nhập</option>
+                            <option value="expense">Expense (Chi tiêu)</option>
+                            <option value="income">Income (Thu nhập)</option>
                         </select>
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label">Danh mục Cha (Nếu có)</label>
+                        <label class="form-label">Parent Category (Optional)</label>
                         <select class="form-select" id="cat-parent">
-                            <option value="">-- Không --</option>
+                            <option value="">-- None --</option>
                         </select>
+                        <div class="form-text">Select a parent category to make this a sub-category.</div>
                     </div>
-                    <button type="submit" class="btn btn-submit w-100">Lưu</button>
+
+                    <button type="submit" class="btn btn-primary w-100">Save Category</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %} {% block scripts %}
 <script>
     let categories = [];
+    let isEditing = false; // Biến cờ để biết đang Thêm hay Sửa
 
+    // HÀM TẢI DANH SÁCH
     async function loadCategories() {
-        const res = await fetch('/api/finance/categories/', {
-            headers: {
-                'Authorization': `Token ${localStorage.getItem('token')}` // <--- Sửa dòng này
-            }
-        });
-        const data = await res.json();
-        categories = data.results;
+        try {
+            // Sửa lỗi Token: Lấy trực tiếp từ localStorage
+            const res = await fetch('/api/finance/categories/', {
+                headers: {
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                }
+            });
 
-        const tbody = document.getElementById('cat-list');
-        const parentSelect = document.getElementById('cat-parent');
-        tbody.innerHTML = '';
-        parentSelect.innerHTML = '<option value="">-- Không --</option>';
+            if (!res.ok) return;
 
-        categories.forEach(cat => {
-            // Fill Table
-            // Cách viết an toàn hơn (thay thế dòng 63 cũ)
-            let parentName = '-';
-            if (cat.parent) {
-                const parentObj = categories.find(c => c.id === cat.parent);
-                if (parentObj) parentName = parentObj.name;
+            const data = await res.json();
+            categories = data.results;
+
+            const tbody = document.getElementById('cat-list');
+            const parentSelect = document.getElementById('cat-parent');
+
+            tbody.innerHTML = '';
+            parentSelect.innerHTML = '<option value="">-- None --</option>';
+
+            if (categories.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">No categories found.</td></tr>';
+                return;
             }
-            const typeBadge = cat.type === 'income' ? 'bg-success' : 'bg-danger';
-            tbody.innerHTML += `
-                <tr>
-                    <td>${cat.name}</td>
-                    <td><span class="badge ${typeBadge}">${cat.type}</span></td>
-                    <td>${parentName}</td>
-                    <td><button class="btn btn-sm btn-outline-danger" onclick="deleteCat(${cat.id})">Xóa</button></td>
-                </tr>
-            `;
-            // Fill Dropdown (chỉ lấy danh mục chưa có cha để làm cha)
-            if (!cat.parent) {
-                parentSelect.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
-            }
-        });
+
+            // 1. Lọc ra các danh mục CHA (không có parent)
+            const parents = categories.filter(c => !c.parent);
+
+            parents.forEach(p => {
+                // Vẽ dòng Cha
+                renderRow(p, true);
+
+                // Thêm Cha vào dropdown (để chọn làm cha cho người khác)
+                parentSelect.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+
+                // 2. Tìm các CON của ông này
+                const children = categories.filter(c => c.parent === p.id);
+                children.forEach(child => {
+                    // Vẽ dòng Con
+                    renderRow(child, false);
+                });
+            });
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    document.getElementById('add-cat-form').addEventListener('submit', async(e) => {
+    // HÀM VẼ MỘT DÒNG TRONG BẢNG
+    function renderRow(cat, isParent) {
+        const tbody = document.getElementById('cat-list');
+        const typeBadge = cat.type === 'income' ? 'bg-success' : 'bg-danger';
+        const typeLabel = cat.type === 'income' ? 'Income' : 'Expense';
+
+        // Logic hiển thị Tên: Cha thì in đậm, Con thì thụt lề
+        const nameDisplay = isParent ? `<b>${cat.name}</b>` : `<span style="padding-left: 30px;">↳ ${cat.name}</span>`;
+        const bgClass = isParent ? 'table-light' : '';
+
+        // Logic hiển thị Số tiền đã tiêu (Spent)
+        // Lưu ý: cat.month_spent đến từ Backend (annotate)
+        let spentText = Number(cat.month_spent || 0).toLocaleString();
+        let spentHtml = `<span class="${cat.type==='expense' ? 'text-danger' : 'text-success'} fw-bold">${spentText} ₫</span>`;
+
+        // Logic hiển thị Ngân sách (Budget)
+        let budgetHtml = '<span class="text-muted">-</span>';
+        if (cat.budget_limit > 0) {
+            const percent = Math.min(100, (cat.month_spent / cat.budget_limit) * 100);
+
+            // Màu sắc thanh tiến độ: Xanh (<80%) -> Vàng -> Đỏ (>100%)
+            let color = 'bg-success';
+            if (percent > 100) color = 'bg-danger';
+            else if (percent > 80) color = 'bg-warning';
+
+            budgetHtml = `
+                <div class="progress" style="height: 6px; width: 120px; margin-bottom: 4px;">
+                    <div class="progress-bar ${color}" style="width: ${percent}%"></div>
+                </div>
+                <small class="text-muted" style="font-size: 11px;">Limit: ${Number(cat.budget_limit).toLocaleString()} ₫</small>
+            `;
+        }
+
+        tbody.innerHTML += `
+            <tr class="${bgClass}">
+                <td class="ps-4">${nameDisplay}</td>
+                <td><span class="badge ${typeBadge}">${typeLabel}</span></td>
+                <td>${spentHtml}</td>
+                <td>${budgetHtml}</td>
+                <td class="text-end pe-4">
+                    <button class="btn btn-sm btn-outline-primary me-1" onclick="openEditModal(${cat.id})">
+                        <i class="bi bi-pencil"></i> Edit
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteCat(${cat.id})">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            </tr>`;
+    }
+
+    // --- QUẢN LÝ MODAL (THÊM & SỬA) ---
+    const modalEl = document.getElementById('catModal');
+    const modalObj = new bootstrap.Modal(modalEl);
+
+    function openAddModal() {
+        isEditing = false;
+        document.getElementById('modal-title').innerText = "Add New Category";
+        document.getElementById('cat-form').reset();
+        document.getElementById('cat-id').value = '';
+        // Reset dropdown cha về mặc định
+        document.getElementById('cat-parent').value = "";
+        modalObj.show();
+    }
+
+    function openEditModal(id) {
+        isEditing = true;
+        const cat = categories.find(c => c.id === id);
+
+        document.getElementById('modal-title').innerText = "Edit Category";
+        document.getElementById('cat-id').value = cat.id;
+        document.getElementById('cat-name').value = cat.name;
+        document.getElementById('cat-type').value = cat.type;
+        // Nếu có cha thì chọn, không thì để trống
+        document.getElementById('cat-parent').value = cat.parent || "";
+
+        modalObj.show();
+    }
+
+    // --- XỬ LÝ SUBMIT FORM ---
+    document.getElementById('cat-form').addEventListener('submit', async(e) => {
         e.preventDefault();
+        const id = document.getElementById('cat-id').value;
         const payload = {
             name: document.getElementById('cat-name').value,
             type: document.getElementById('cat-type').value,
             parent: document.getElementById('cat-parent').value || null
         };
-        const res = await fetch('/api/finance/categories/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`
-            },
-            body: JSON.stringify(payload)
-        });
-        if (res.ok) {
-            location.reload();
-        } else {
-            alert('Lỗi thêm danh mục');
+
+        // Nếu đang sửa -> Dùng PUT và thêm ID vào URL
+        // Nếu đang thêm -> Dùng POST
+        const url = isEditing ? `/api/finance/categories/${id}/` : '/api/finance/categories/';
+        const method = isEditing ? 'PUT' : 'POST';
+
+        try {
+            const res = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                modalObj.hide();
+                loadCategories(); // Tải lại bảng
+            } else {
+                alert('Error saving category. Name might be duplicate.');
+            }
+        } catch (err) {
+            console.error(err);
         }
     });
 
+    // --- XÓA DANH MỤC ---
     async function deleteCat(id) {
-        if (!confirm('Xóa danh mục này?')) return;
+        if (!confirm('Are you sure? Deleting this category might affect your Transactions history.')) return;
+
         await fetch(`/api/finance/categories/${id}/`, {
             method: 'DELETE',
             headers: {
-                'Authorization': `Token ${token}`
+                'Authorization': `Token ${localStorage.getItem('token')}`
             }
         });
+
         loadCategories();
     }
+
+    // Chạy ngay khi vào trang
     loadCategories();
 </script>
 {% endblock %}
