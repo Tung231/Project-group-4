@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Manager - Landing Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+            min-height: 100vh;
+        }
+        
+        .hero-section {
+            padding: 5rem 0;
+            color: white;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .feature-card {
+            background: #ffe4e9;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            border: none;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: #ff6b9d;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-hero {
+            background: white;
+            color: #ff6b9d;
+            border: 2px solid white;
+            padding: 1rem 3rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-hero:hover {
+            background: transparent;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .features-section {
+            padding: 4rem 0;
+            background: rgba(255,255,255,0.95);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="hero-title">
+                <i class="bi bi-wallet2"></i> MyWallet
+            </h1>
+            <p class="hero-subtitle">
+                Quản lý chi tiêu thông minh, theo dõi ngân sách hiệu quả
+            </p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="/login/" class="btn btn-hero">
+                    <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+                </a>
+                <a href="/register/" class="btn btn-hero">
+                    <i class="bi bi-person-plus"></i> Đăng ký
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="text-center mb-5" style="color: #ff6b9d; font-weight: 600;">Tính năng nổi bật</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <i class="bi bi-wallet2 feature-icon"></i>
+                        <h4 style="color: #ff6b9d; font-weight: 600;">Quản lý Ví</h4>
+                        <p class="text-muted">Theo dõi nhiều ví và tài khoản ngân hàng trong một nơi</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <i class="bi bi-tags feature-icon"></i>
+                        <h4 style="color: #ff6b9d; font-weight: 600;">Danh mục</h4>
+                        <p class="text-muted">Phân loại chi tiêu và thu nhập theo danh mục tùy chỉnh</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <i class="bi bi-pie-chart feature-icon"></i>
+                        <h4 style="color: #ff6b9d; font-weight: 600;">Báo cáo</h4>
+                        <p class="text-muted">Xem biểu đồ và thống kê chi tiết về tài chính của bạn</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
