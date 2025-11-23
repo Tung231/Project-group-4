@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers 
 from .models import Account, Category, Transaction, Budget
 
 class AccountSerializer(serializers.ModelSerializer):
