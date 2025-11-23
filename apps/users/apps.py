@@ -1,11 +1,10 @@
-from django.apps import AppConfig 
-# Import lớp cơ sở, lấy lớp AppConfig từ Django, đây là lớp mà mọi cấu hình
-# ứng dụng phải kế thừa
+# Khai báo "ứng dụng" users
 
-class UsersConfig(AppConfig): # Tạo 1 lớp cấu hình cho ứng dụng users
-    default_auto_field = 'django.db.models.BigAutoField' # Đặt kiểu dữ liệu mặc định cho các trường khóa chính (primary key) trong mô hình của ứng dụng này
-    name = 'apps.users'  # Chú ý: Phải có chữ 'apps.' ở đầu
-    # Khai báo đầy đủ full path của ứng dụng con 
-    # File này biến thư mục finance/ và users/ thành các ứng dụng Django chính thức có thể cài đặt
-    # Cấu hình ID model đặt chuẩn về kiểu dữ liệu khóa chính
-    # Tổ chức modular
+from django.apps import AppConfig
+
+class UsersConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'apps.users'  
+    # Chú ý: Phải có 'apps.' ở đầu vì app users nằm trong thư mục apps để Django nhận diện đường dẫn 
+    # 1 package trong python dùng dấu . để phân cấp thư mục
+    # Trường name được Django dùng để import models, urls; load signals, migrations
