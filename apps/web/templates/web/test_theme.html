@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Theme</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #6B2C91 0%, #000000 100%) !important;
+            min-height: 100vh;
+            color: #C0B3D9;
+            padding: 50px;
+            font-family: Arial, sans-serif;
+        }
+        .test-box {
+            background: rgba(26, 10, 46, 0.8);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(192, 179, 217, 0.3);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #C0B3D9;
+            text-shadow: 0 0 10px rgba(192, 179, 217, 0.5);
+        }
+        
+        /* Gradient Hồng */
+        .gradient-pink {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 50%, #ffa8c5 100%) !important;
+        }
+        
+        .gradient-pink-text {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Gradient Vàng */
+        .gradient-yellow {
+            background: linear-gradient(135deg, #f6c23e 0%, #f9d423 50%, #ffd700 100%) !important;
+        }
+        
+        .gradient-yellow-text {
+            background: linear-gradient(135deg, #f6c23e 0%, #ffd700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Kết hợp gradient hồng và vàng */
+        .gradient-pink-yellow {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 25%, #f6c23e 50%, #f9d423 75%, #ffd700 100%) !important;
+        }
+        
+        .btn-pink-gradient {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%) !important;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .btn-yellow-gradient {
+            background: linear-gradient(135deg, #f6c23e 0%, #ffd700 100%) !important;
+            border: none;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-box">
+        <h1>Test Theme - Màu Tím Đen</h1>
+        <p>Nếu bạn thấy background màu tím đậm chuyển sang đen, và text màu tím bạc (#C0B3D9), thì theme đã được áp dụng đúng!</p>
+        <p>Màu hiện tại:</p>
+        <ul>
+            <li>Background: Gradient từ #6B2C91 (tím đậm) → #000000 (đen)</li>
+            <li>Text: #C0B3D9 (tím bạc)</li>
+            <li>Box: rgba(26, 10, 46, 0.8) với border tím</li>
+        </ul>
+        <a href="/" style="color: #C0B3D9;">← Quay lại Landing Page</a>
+    </div>
+</body>
+</html>
+

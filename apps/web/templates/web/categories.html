@@ -1,0 +1,248 @@
+{% extends 'web/base.html' %} {% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🏷️ Category Management</h2>
+    <button class="btn btn-primary" onclick="openAddModal()">
+        <i class="bi bi-plus-circle"></i> + Add Category
+    </button>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-4">Name</th>
+                    <th>Type</th>
+                    <th>Spent (This Month)</th>
+                    <th>Budget Status</th>
+                    <th class="text-end pe-4">Action</th>
+                </tr>
+            </thead>
+            <tbody id="cat-list">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="catModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title">Add Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="cat-form">
+                    <input type="hidden" id="cat-id">
+                    <div class="mb-3">
+                        <label class="form-label">Category Name</label>
+                        <input type="text" class="form-control" id="cat-name" required placeholder="e.g. Food, salary...">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Type</label>
+                        <select class="form-select" id="cat-type">
+                            <option value="expense">Expense (Chi tiêu)</option>
+                            <option value="income">Income (Thu nhập)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Parent Category (Optional)</label>
+                        <select class="form-select" id="cat-parent">
+                            <option value="">-- None --</option>
+                        </select>
+                        <div class="form-text">Select a parent category to make this a sub-category.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Save Category</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+    let categories = [];
+    let isEditing = false; // Biến cờ để biết đang Thêm hay Sửa
+
+    // HÀM TẢI DANH SÁCH
+    async function loadCategories() {
+        try {
+            // Sửa lỗi Token: Lấy trực tiếp từ localStorage
+            const res = await fetch('/api/finance/categories/', {
+                headers: {
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                }
+            });
+
+            if (!res.ok) return;
+
+            const data = await res.json();
+            categories = data.results;
+
+            const tbody = document.getElementById('cat-list');
+            const parentSelect = document.getElementById('cat-parent');
+
+            tbody.innerHTML = '';
+            parentSelect.innerHTML = '<option value="">-- None --</option>';
+
+            if (categories.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">No categories found.</td></tr>';
+                return;
+            }
+
+            // 1. Lọc ra các danh mục CHA (không có parent)
+            const parents = categories.filter(c => !c.parent);
+
+            parents.forEach(p => {
+                // Vẽ dòng Cha
+                renderRow(p, true);
+
+                // Thêm Cha vào dropdown (để chọn làm cha cho người khác)
+                parentSelect.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+
+                // 2. Tìm các CON của ông này
+                const children = categories.filter(c => c.parent === p.id);
+                children.forEach(child => {
+                    // Vẽ dòng Con
+                    renderRow(child, false);
+                });
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    // HÀM VẼ MỘT DÒNG TRONG BẢNG
+    function renderRow(cat, isParent) {
+        const tbody = document.getElementById('cat-list');
+        const typeBadge = cat.type === 'income' ? 'bg-success' : 'bg-danger';
+        const typeLabel = cat.type === 'income' ? 'Income' : 'Expense';
+
+        // Logic hiển thị Tên: Cha thì in đậm, Con thì thụt lề
+        const nameDisplay = isParent ? `<b>${cat.name}</b>` : `<span style="padding-left: 30px;">↳ ${cat.name}</span>`;
+        const bgClass = isParent ? 'table-light' : '';
+
+        // Logic hiển thị Số tiền đã tiêu (Spent)
+        // Lưu ý: cat.month_spent đến từ Backend (annotate)
+        let spentText = Number(cat.month_spent || 0).toLocaleString();
+        let spentHtml = `<span class="${cat.type==='expense' ? 'text-danger' : 'text-success'} fw-bold">${spentText} ₫</span>`;
+
+        // Logic hiển thị Ngân sách (Budget)
+        let budgetHtml = '<span class="text-muted">-</span>';
+        if (cat.budget_limit > 0) {
+            const percent = Math.min(100, (cat.month_spent / cat.budget_limit) * 100);
+
+            // Màu sắc thanh tiến độ: Xanh (<80%) -> Vàng -> Đỏ (>100%)
+            let color = 'bg-success';
+            if (percent > 100) color = 'bg-danger';
+            else if (percent > 80) color = 'bg-warning';
+
+            budgetHtml = `
+                <div class="progress" style="height: 6px; width: 120px; margin-bottom: 4px;">
+                    <div class="progress-bar ${color}" style="width: ${percent}%"></div>
+                </div>
+                <small class="text-muted" style="font-size: 11px;">Limit: ${Number(cat.budget_limit).toLocaleString()} ₫</small>
+            `;
+        }
+
+        tbody.innerHTML += `
+            <tr class="${bgClass}">
+                <td class="ps-4">${nameDisplay}</td>
+                <td><span class="badge ${typeBadge}">${typeLabel}</span></td>
+                <td>${spentHtml}</td>
+                <td>${budgetHtml}</td>
+                <td class="text-end pe-4">
+                    <button class="btn btn-sm btn-outline-primary me-1" onclick="openEditModal(${cat.id})">
+                        <i class="bi bi-pencil"></i> Edit
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteCat(${cat.id})">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            </tr>`;
+    }
+
+    // --- QUẢN LÝ MODAL (THÊM & SỬA) ---
+    const modalEl = document.getElementById('catModal');
+    const modalObj = new bootstrap.Modal(modalEl);
+
+    function openAddModal() {
+        isEditing = false;
+        document.getElementById('modal-title').innerText = "Add New Category";
+        document.getElementById('cat-form').reset();
+        document.getElementById('cat-id').value = '';
+        // Reset dropdown cha về mặc định
+        document.getElementById('cat-parent').value = "";
+        modalObj.show();
+    }
+
+    function openEditModal(id) {
+        isEditing = true;
+        const cat = categories.find(c => c.id === id);
+
+        document.getElementById('modal-title').innerText = "Edit Category";
+        document.getElementById('cat-id').value = cat.id;
+        document.getElementById('cat-name').value = cat.name;
+        document.getElementById('cat-type').value = cat.type;
+        // Nếu có cha thì chọn, không thì để trống
+        document.getElementById('cat-parent').value = cat.parent || "";
+
+        modalObj.show();
+    }
+
+    // --- XỬ LÝ SUBMIT FORM ---
+    document.getElementById('cat-form').addEventListener('submit', async(e) => {
+        e.preventDefault();
+        const id = document.getElementById('cat-id').value;
+        const payload = {
+            name: document.getElementById('cat-name').value,
+            type: document.getElementById('cat-type').value,
+            parent: document.getElementById('cat-parent').value || null
+        };
+
+        // Nếu đang sửa -> Dùng PUT và thêm ID vào URL
+        // Nếu đang thêm -> Dùng POST
+        const url = isEditing ? `/api/finance/categories/${id}/` : '/api/finance/categories/';
+        const method = isEditing ? 'PUT' : 'POST';
+
+        try {
+            const res = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                modalObj.hide();
+                loadCategories(); // Tải lại bảng
+            } else {
+                alert('Error saving category. Name might be duplicate.');
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    });
+
+    // --- XÓA DANH MỤC ---
+    async function deleteCat(id) {
+        if (!confirm('Are you sure? Deleting this category might affect your Transactions history.')) return;
+
+        await fetch(`/api/finance/categories/${id}/`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Token ${localStorage.getItem('token')}`
+            }
+        });
+
+        loadCategories();
+    }
+
+    // Chạy ngay khi vào trang
+    loadCategories();
+</script>
+{% endblock %}
