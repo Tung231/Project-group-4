@@ -1,3 +1,8 @@
-django>=4.2,<5.0
+# Django: Framework chính để xây dựng web
+django>=5.0
+
+# DRF: Thư viện giúp tạo API nhanh chóng
 djangorestframework
+
+# Cors Headers: Thư viện giúp Frontend (HTML/JS) gọi được API của Backend mà không bị chặn
 django-cors-headers
