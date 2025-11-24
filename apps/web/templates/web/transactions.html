@@ -1,0 +1,185 @@
+{% extends 'web/base.html' %} {% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🧾 Transaction History</h2>
+
+    <div class="d-flex gap-2">
+        <select class="form-select" id="filter-type" onchange="currentPage=1; loadTransactions()">
+            <option value="">All Types (Tất cả)</option>
+            <option value="expense">🔴 Expense (Chi tiêu)</option>
+            <option value="income">🟢 Income (Thu nhập)</option>
+        </select>
+
+        <select class="form-select" id="sort-by" onchange="currentPage=1; loadTransactions()">
+            <option value="-occurred_at">Newest First (Mới nhất)</option>
+            <option value="occurred_at">Oldest First (Cũ nhất)</option>
+            <option value="-amount">Highest Amount (Tiền to nhất)</option>
+            <option value="amount">Lowest Amount (Tiền nhỏ nhất)</option>
+        </select>
+
+        <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addTxModal">
+            + Add New
+        </button>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Account</th>
+                    <th>Amount</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+            <tbody id="tx-full-list">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+        <button class="btn btn-sm btn-outline-secondary" id="btn-prev" onclick="changePage(-1)">Previous</button>
+        <span id="page-info" class="text-muted small">Page 1</span>
+        <button class="btn btn-sm btn-outline-secondary" id="btn-next" onclick="changePage(1)">Next</button>
+    </div>
+</div>
+
+<div class="modal fade" id="addTxModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Transaction</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <form id="add-tx-form">
+                    <div class="mb-3"><label>Type</label><select class="form-select" id="tx-type"><option value="expense">Expense</option><option value="income">Income</option></select></div>
+                    <div class="mb-3"><label>Amount</label><input type="number" class="form-control" id="tx-amount" required></div>
+                    <div class="row">
+                        <div class="col-6 mb-3"><label>Category</label><select class="form-select" id="tx-category"></select></div>
+                        <div class="col-6 mb-3"><label>Account</label><select class="form-select" id="tx-account"></select></div>
+                    </div>
+                    <div class="mb-3"><label>Note</label><input type="text" class="form-control" id="tx-note"></div>
+                    <button type="submit" class="btn btn-primary w-100">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+    let currentPage = 1;
+
+    // HÀM TẢI DANH SÁCH GIAO DỊCH (CÓ FILTER & SORT)
+    async function loadTransactions() {
+        const typeFilter = document.getElementById('filter-type').value;
+        const sortBy = document.getElementById('sort-by').value;
+
+        // Xây dựng URL API với các tham số lọc
+        let url = `/api/finance/transactions/?page=${currentPage}&sort=${sortBy}`;
+        if (typeFilter) url += `&type=${typeFilter}`;
+
+        try {
+            const res = await fetch(url, {
+                headers: {
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                }
+            });
+            const data = await res.json();
+
+            const tbody = document.getElementById('tx-full-list');
+            tbody.innerHTML = '';
+
+            if (data.results && data.results.length > 0) {
+                data.results.forEach(tx => {
+                    const typeBadge = tx.type === 'income' ? 'bg-success' : 'bg-danger';
+                    const typeLabel = tx.type === 'income' ? 'Income' : 'Expense';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>
+                                ${new Date(tx.occurred_at).toLocaleDateString()} 
+                                <br><small class="text-muted" style="font-size: 11px;">${new Date(tx.occurred_at).toLocaleTimeString()}</small>
+                            </td>
+                            <td><span class="badge ${typeBadge}">${typeLabel}</span></td>
+                            <td>${tx.category_name || '-'}</td>
+                            <td>${tx.account_name}</td>
+                            <td class="fw-bold ${tx.type==='income'?'text-success':'text-danger'}">
+                                ${Number(tx.amount).toLocaleString()} ₫
+                            </td>
+                            <td class="text-muted small">${tx.notes || ''}</td>
+                        </tr>`;
+                });
+
+                // Cập nhật trạng thái nút Next/Prev
+                document.getElementById('page-info').innerText = `Page ${currentPage}`;
+                document.getElementById('btn-prev').disabled = !data.previous;
+                document.getElementById('btn-next').disabled = !data.next;
+            } else {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">No transactions found matching your filters.</td></tr>';
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    function changePage(step) {
+        currentPage += step;
+        loadTransactions();
+    }
+
+    // --- CÁC HÀM HỖ TRỢ MODAL THÊM MỚI ---
+    async function loadDropdowns() {
+        const headers = {
+            'Authorization': `Token ${localStorage.getItem('token')}`
+        };
+        const catRes = await fetch('/api/finance/categories/', {
+            headers
+        });
+        const catData = await catRes.json();
+        const catSelect = document.getElementById('tx-category');
+        catSelect.innerHTML = '';
+        catData.results.forEach(c => catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+
+        const accRes = await fetch('/api/finance/accounts/', {
+            headers
+        });
+        const accData = await accRes.json();
+        const accSelect = document.getElementById('tx-account');
+        accSelect.innerHTML = '';
+        accData.results.forEach(a => accSelect.innerHTML += `<option value="${a.id}">${a.name}</option>`);
+    }
+
+    document.getElementById('add-tx-form').addEventListener('submit', async(e) => {
+        e.preventDefault();
+        const payload = {
+            type: document.getElementById('tx-type').value,
+            amount: document.getElementById('tx-amount').value,
+            category: document.getElementById('tx-category').value || null,
+            account: document.getElementById('tx-account').value,
+            notes: document.getElementById('tx-note').value,
+            occurred_at: new Date().toISOString()
+        };
+        const res = await fetch('/api/finance/transactions/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+            bootstrap.Modal.getInstance(document.getElementById('addTxModal')).hide();
+            document.getElementById('add-tx-form').reset();
+            loadTransactions(); // Tải lại danh sách sau khi thêm
+        } else {
+            alert('Error adding transaction');
+        }
+    });
+
+    // Chạy khi mở trang
+    loadTransactions();
+    loadDropdowns();
+</script>
+{% endblock %}

@@ -1,0 +1,13 @@
+# Django: Framework chính để xây dựng web (bộ khung sườn).
+# Quy định phiên bản >= 4.2 nhưng < 5.0 để đảm bảo tính ổn định.
+django>=4.2,<5.0
+
+# Django REST Framework (DRF):
+# Thư viện giúp Django biến thành Backend API xịn.
+# Nó giúp chuyển đổi dữ liệu từ Python (Object) sang JSON để Frontend đọc được.
+djangorestframework
+
+# Django CORS Headers:
+# "Giấy phép thông hành".
+# Giúp Frontend (chạy ở port này) gọi được API của Backend (chạy ở port kia) mà không bị trình duyệt chặn.
+django-cors-headers

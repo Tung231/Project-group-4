@@ -1,0 +1,203 @@
+{% extends 'web/base.html' %} {% block content %}
+<style>
+    .account-card {
+        transition: transform 0.2s;
+        border: none;
+    }
+    
+    .account-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .border-bank {
+        border-left: 5px solid #198754 !important;
+    }
+    
+    .border-cash {
+        border-left: 5px solid #0d6efd !important;
+    }
+    
+    .border-ewallet {
+        border-left: 5px solid #0dcaf0 !important;
+    }
+<<<<<<< HEAD
+    /* Gradient Hồng */
+    
+    .gradient-pink {
+        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 50%, #ffa8c5 100%) !important;
+    }
+    
+    .gradient-pink-text {
+        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    /* Gradient Vàng */
+    
+    .gradient-yellow {
+        background: linear-gradient(135deg, #f6c23e 0%, #f9d423 50%, #ffd700 100%) !important;
+    }
+    
+    .gradient-yellow-text {
+        background: linear-gradient(135deg, #f6c23e 0%, #ffd700 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    /* Kết hợp gradient hồng và vàng */
+    
+    .gradient-pink-yellow {
+        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 25%, #f6c23e 50%, #f9d423 75%, #ffd700 100%) !important;
+    }
+    /* Button với gradient hồng */
+    
+    .btn-pink-gradient {
+        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%) !important;
+        border: none;
+        color: white;
+        box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-pink-gradient:hover {
+        background: linear-gradient(135deg, #ff8fab 0%, #ffa8c5 100%) !important;
+        box-shadow: 0 6px 20px rgba(255, 107, 157, 0.6);
+        transform: translateY(-2px);
+        color: white;
+    }
+    /* Button với gradient vàng */
+    
+    .btn-yellow-gradient {
+        background: linear-gradient(135deg, #f6c23e 0%, #ffd700 100%) !important;
+        border: none;
+        color: #333;
+        box-shadow: 0 4px 15px rgba(246, 194, 62, 0.4);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-yellow-gradient:hover {
+        background: linear-gradient(135deg, #f9d423 0%, #ffed4e 100%) !important;
+        box-shadow: 0 6px 20px rgba(246, 194, 62, 0.6);
+        transform: translateY(-2px);
+        color: #333;
+    }
+=======
+    
+>>>>>>> abc96ca (Final)
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>💰 Wallet Management</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+        <i class="bi bi-plus-circle"></i> Add Wallet
+    </button>
+</div>
+
+<div class="row" id="account-list">
+    <div class="text-center mt-5">
+        <div class="spinner-border text-primary"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="addAccountModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Wallet</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <form id="add-acc-form">
+                    <div class="mb-3"><label class="form-label">Wallet Name</label><input type="text" class="form-control" id="acc-name" required placeholder="e.g. Cash, Chase Bank..."></div>
+                    <div class="mb-3"><label class="form-label">Type</label>
+                        <select class="form-select" id="acc-type">
+                            <option value="cash">Cash</option>
+                            <option value="bank">Bank Account</option>
+                            <option value="e-wallet">E-Wallet</option>
+                        </select>
+                    </div>
+                    <div class="mb-3"><label class="form-label">Initial Balance (VND)</label><input type="number" class="form-control" id="acc-balance" value="0" required></div>
+                    <button type="submit" class="btn btn-primary w-100">Save Wallet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+    async function loadAccounts() {
+        try {
+            const res = await fetch('/api/finance/accounts/', {
+                headers: {
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                }
+            });
+            const data = await res.json();
+            const container = document.getElementById('account-list');
+            container.innerHTML = '';
+
+            if (data.results && data.results.length > 0) {
+                data.results.forEach(acc => {
+                    let typeLabel = acc.type === 'cash' ? 'Cash' : (acc.type === 'bank' ? 'Bank' : 'E-Wallet');
+                    let borderClass = acc.type === 'bank' ? 'border-bank' : (acc.type === 'e-wallet' ? 'border-ewallet' : 'border-cash');
+
+                    container.innerHTML += `
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 shadow-sm ${borderClass} account-card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h5 class="card-title fw-bold mb-1">${acc.name}</h5>
+                                            <span class="badge bg-secondary">${typeLabel}</span>
+                                        </div>
+                                        <h4 class="text-primary mb-0 align-self-center">${Number(acc.current_balance).toLocaleString()} ₫</h4>
+                                    </div>
+                                    <div class="mt-3 text-end border-top pt-2">
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteAccount(${acc.id})">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+            } else {
+                container.innerHTML = '<div class="alert alert-info text-center">No wallets found. Please add your first wallet!</div>';
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    document.getElementById('add-acc-form').addEventListener('submit', async(e) => {
+        e.preventDefault();
+        const payload = {
+            name: document.getElementById('acc-name').value,
+            type: document.getElementById('acc-type').value,
+            initial_balance: document.getElementById('acc-balance').value
+        };
+        const res = await fetch('/api/finance/accounts/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+            location.reload();
+        } else {
+            alert('Error adding wallet.');
+        }
+    });
+
+    async function deleteAccount(id) {
+        if (!confirm('Are you sure? Transactions related to this wallet might be affected.')) return;
+        const res = await fetch(`/api/finance/accounts/${id}/`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Token ${localStorage.getItem('token')}`
+            }
+        });
+        if (res.ok) loadAccounts();
+    }
+    loadAccounts();
+</script>
+{% endblock %}

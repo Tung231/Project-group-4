@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Expense Manager - Welcome</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #6B2C91 0%, #000000 100%) !important;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Background image overlay cho hero section */
+        .hero-section {
+            padding: 5rem 0;
+            color: white !important;
+            position: relative;
+            background: url('/static/web/images/background-gradient.jpg') !important;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        /* Background image cho phần nút đăng nhập/đăng ký */
+        .hero-buttons-container {
+            position: relative;
+            padding: 2rem;
+            border-radius: 20px;
+            background-image: url('/static/web/images/background-gradient.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 2rem auto;
+            max-width: 600px;
+            box-shadow: 0 10px 40px rgba(107, 44, 145, 0.5);
+        }
+        
+        .hero-buttons-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(107, 44, 145, 0.7) 0%, rgba(0, 0, 0, 0.7) 100%);
+            border-radius: 20px;
+            z-index: 0;
+        }
+        
+        .hero-buttons-container > * {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+<<<<<<< HEAD
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(135deg, #C0B3D9 0%, #FFFFFF 100%);
+=======
+            background: linear-gradient(135deg, #ffffff 0%, #FFFFFF 100%);
+>>>>>>> abc96ca (Final)
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .feature-card {
+            background: rgba(192, 179, 217, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(107, 44, 145, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(192, 179, 217, 0.2);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(107, 44, 145, 0.5);
+            background: rgba(192, 179, 217, 0.25);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+<<<<<<< HEAD
+            color: #C0B3D9;
+=======
+            color: #ffffff;
+>>>>>>> abc96ca (Final)
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px rgba(192, 179, 217, 0.5);
+        }
+        
+        .btn-hero {
+            background: rgba(192, 179, 217, 0.2);
+            color: #FFFFFF;
+            border: 2px solid rgba(192, 179, 217, 0.5);
+            padding: 1rem 3rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(107, 44, 145, 0.4);
+            text-decoration: none;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-hero:hover {
+            background: rgba(192, 179, 217, 0.4);
+            color: #FFFFFF;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(107, 44, 145, 0.6);
+            border-color: rgba(192, 179, 217, 0.8);
+        }
+        
+        .features-section {
+            padding: 4rem 0;
+<<<<<<< HEAD
+            background: rgba(10, 10, 10, 0.95);
+=======
+            background: rgba(42, 11, 54, 0.95);
+>>>>>>> abc96ca (Final)
+            backdrop-filter: blur(10px);
+        }
+        
+        .features-section h2 {
+<<<<<<< HEAD
+            color: #C0B3D9 !important;
+=======
+            color: #ffffff !important;
+>>>>>>> abc96ca (Final)
+            text-shadow: 0 0 10px rgba(192, 179, 217, 0.3);
+        }
+        
+        .feature-card h4 {
+<<<<<<< HEAD
+            color: #C0B3D9 !important;
+        }
+        
+        .feature-card .text-muted {
+            color: rgba(192, 179, 217, 0.7) !important;
+        }
+        
+        /* Gradient Hồng */
+        .gradient-pink {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 50%, #ffa8c5 100%) !important;
+        }
+        
+        .gradient-pink-text {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Gradient Vàng */
+        .gradient-yellow {
+            background: linear-gradient(135deg, #f6c23e 0%, #f9d423 50%, #ffd700 100%) !important;
+        }
+        
+        .gradient-yellow-text {
+            background: linear-gradient(135deg, #f6c23e 0%, #ffd700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Kết hợp gradient hồng và vàng */
+        .gradient-pink-yellow {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 25%, #f6c23e 50%, #f9d423 75%, #ffd700 100%) !important;
+        }
+        
+        /* Button với gradient hồng */
+        .btn-pink-gradient {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%) !important;
+            border: none;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+        }
+        
+        .btn-pink-gradient:hover {
+            background: linear-gradient(135deg, #ff8fab 0%, #ffa8c5 100%) !important;
+            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.6);
+            transform: translateY(-2px);
+        }
+        
+        /* Button với gradient vàng */
+        .btn-yellow-gradient {
+            background: linear-gradient(135deg, #f6c23e 0%, #ffd700 100%) !important;
+            border: none;
+            color: #333;
+            box-shadow: 0 4px 15px rgba(246, 194, 62, 0.4);
+        }
+        
+        .btn-yellow-gradient:hover {
+            background: linear-gradient(135deg, #f9d423 0%, #ffed4e 100%) !important;
+            box-shadow: 0 6px 20px rgba(246, 194, 62, 0.6);
+            transform: translateY(-2px);
+        }
+=======
+            color: #ffffff !important;
+        }
+        
+        .feature-card .text-muted {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+>>>>>>> abc96ca (Final)
+    </style>
+</head>
+
+<body>
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="hero-title"><i class="bi bi-wallet2"></i> Expense Manager</h1>
+            <p class="hero-subtitle">Smart expense tracking, effective budget management.</p>
+            <div class="hero-buttons-container">
+                <div class="d-flex gap-3 justify-content-center flex-wrap" id="hero-buttons">
+                    <a href="/login/" class="btn btn-hero" id="btn-signin"><i class="bi bi-box-arrow-in-right"></i> Sign In</a>
+                    <a href="/register/" class="btn btn-hero" id="btn-signup"><i class="bi bi-person-plus"></i> Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="container">
+            <h2 class="text-center mb-5" style="font-weight: 600;">Key Features</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <i class="bi bi-wallet2 feature-icon"></i>
+                        <h4 style="font-weight: 600;">Wallet Manager</h4>
+                        <p class="text-muted">Track multiple wallets and bank accounts in one place.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <i class="bi bi-tags feature-icon"></i>
+                        <h4 style="font-weight: 600;">Categories</h4>
+                        <p class="text-muted">Organize income and expenses with custom categories.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <i class="bi bi-pie-chart feature-icon"></i>
+                        <h4 style="font-weight: 600;">Reports</h4>
+                        <p class="text-muted">Visualize your financial health with detailed charts.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Force reload để tránh cache
+        if (performance.navigation.type === 1) {
+            console.log('Page reloaded - Theme should be purple-black');
+        }
+        
+        // Kiểm tra và apply theme ngay lập tức
+        document.addEventListener('DOMContentLoaded', function() {
+            const body = document.body;
+            if (body) {
+                body.style.background = 'linear-gradient(135deg, #6B2C91 0%, #000000 100%)';
+            }
+        });
+        // Set background image cho phần nút đăng nhập/đăng ký
+        const buttonsContainer = document.querySelector('.hero-buttons-container');
+        if (buttonsContainer) {
+            // Thử load ảnh từ static files
+            const img = new Image();
+            img.onload = function() {
+                buttonsContainer.style.backgroundImage = `url('/static/web/images/background-gradient.jpg')`;
+            };
+            img.onerror = function() {
+                // Nếu không có ảnh, sử dụng gradient fallback (đã có trong CSS)
+                console.log('Background image not found, using gradient fallback');
+            };
+            img.src = '/static/web/images/landing-background.jpg';
+        }
+        
+        // Kiểm tra nếu người dùng đã đăng nhập
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+        
+        if (token && username) {
+            // Nếu đã đăng nhập, thay đổi nút thành "Go to Dashboard"
+            const heroButtons = document.getElementById('hero-buttons');
+            heroButtons.innerHTML = `
+                <a href="/dashboard/" class="btn btn-hero">
+                    <i class="bi bi-speedometer2"></i> Go to Dashboard
+                </a>
+                <a href="/login/" class="btn btn-hero" onclick="localStorage.clear(); return true;" style="background: rgba(192, 179, 217, 0.3);">
+                    <i class="bi bi-box-arrow-right"></i> Sign Out
+                </a>
+            `;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,134 @@
+{% extends 'web/base.html' %} {% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🎯 Budget Management</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBudgetModal">
+        <i class="bi bi-plus-circle"></i> Create Budget
+    </button>
+</div>
+
+<div class="row" id="budget-list">
+    <div class="text-center mt-5">
+        <div class="spinner-border text-primary"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="addBudgetModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Budget</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <form id="add-budget-form">
+                    <div class="mb-3"><label class="form-label">Category</label>
+                        <select class="form-select" id="budget-cat" required><option>Loading...</option></select>
+                    </div>
+                    <div class="mb-3"><label class="form-label">Limit Amount (VND)</label><input type="number" class="form-control" id="budget-amount" required></div>
+                    <div class="mb-3"><label class="form-label">Period</label>
+                        <select class="form-select" id="budget-period">
+                            <option value="monthly">Monthly</option>
+                            <option value="weekly">Weekly</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Save Budget</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+    async function loadBudgets() {
+        try {
+            // 1. Get Budgets
+            const res = await fetch('/api/finance/budgets/', {
+                headers: {
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                }
+            });
+            const data = await res.json();
+
+            // 2. Get Categories for Dropdown
+            const catRes = await fetch('/api/finance/categories/?type=expense', {
+                headers: {
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                }
+            });
+            const catData = await catRes.json();
+
+            // Fill Dropdown
+            const catSelect = document.getElementById('budget-cat');
+            catSelect.innerHTML = '';
+            if (catData.results) {
+                catData.results.forEach(c => catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+            }
+
+            // Fill List
+            const container = document.getElementById('budget-list');
+            container.innerHTML = '';
+            if (data.results && data.results.length > 0) {
+                data.results.forEach(b => {
+                    let periodLabel = b.period === 'monthly' ? 'Monthly' : 'Weekly';
+                    container.innerHTML += `
+                        <div class="col-md-6 mb-4">
+                            <div class="card shadow-sm h-100 border-0">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <h5 class="card-title fw-bold text-primary mb-1">${b.category_name}</h5>
+                                            <span class="badge bg-light text-dark border">Category</span>
+                                        </div>
+                                        <span class="badge bg-info text-dark">${periodLabel}</span>
+                                    </div>
+                                    
+                                    <h3 class="mb-3">${Number(b.amount).toLocaleString()} <small class="fs-6 text-muted">VND</small></h3>
+                                    
+                                    <div class="d-grid">
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteBudget(${b.id})">Delete Budget</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+            } else {
+                container.innerHTML = '<div class="alert alert-info text-center w-100">No budgets set. Create one to track your spending!</div>';
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    document.getElementById('add-budget-form').addEventListener('submit', async(e) => {
+        e.preventDefault();
+        const payload = {
+            category: document.getElementById('budget-cat').value,
+            amount: document.getElementById('budget-amount').value,
+            period: document.getElementById('budget-period').value
+        };
+        const res = await fetch('/api/finance/budgets/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+            location.reload();
+        } else {
+            alert('Error creating budget');
+        }
+    });
+
+    async function deleteBudget(id) {
+        if (!confirm('Delete this budget?')) return;
+        const res = await fetch(`/api/finance/budgets/${id}/`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Token ${localStorage.getItem('token')}`
+            }
+        });
+        if (res.ok) loadBudgets();
+    }
+    loadBudgets();
+</script>
+{% endblock %}

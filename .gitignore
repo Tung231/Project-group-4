@@ -1,0 +1,18 @@
+# 1. Thư mục môi trường ảo (Virtual Environment)
+# Cái này chứa hàng nghìn file thư viện, rất nặng và mỗi máy cài một kiểu.
+# KHÔNG BAO GIỜ được up lên Git. Máy ai người nấy tự cài bằng requirements.txt.
+venv/
+
+# 2. File biên dịch của Python
+# Khi chạy, Python tự sinh ra các file .pyc để chạy nhanh hơn.
+# Đây là file rác, không cần lưu trữ.
+__pycache__/
+*.pyc
+
+# 3. Cơ sở dữ liệu (Database)
+# Chứa toàn bộ user, tiền nong, giao dịch thật của mình.
+# Up lên Git là LỘ HẾT thông tin mật + Gây xung đột file (Conflict) khi người khác tải về.
+db.sqlite3
+
+# 4. File rác của hệ điều hành Mac OS (Windows không có cái này, nhưng cứ chặn cho chắc)
+.DS_Store
