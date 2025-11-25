@@ -16,30 +16,47 @@
             min-height: 100vh;
             position: relative;
         }
-        
         /* Background image overlay cho hero section */
+        
         .hero-section {
             padding: 5rem 0;
             color: white !important;
             position: relative;
-            background: url('/static/web/images/background-gradient.jpg') !important;
+            /* SỬA ĐỔI Ở ĐÂY */
+            /* 1. Dùng background-image rõ ràng thay vì shorthand 'background' */
+            background-image: url('/static/web/images/background-gradient.jpg') !important;
+            /* 2. Chuyển thành 'cover' để phủ kín bề ngang */
             background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            /* 3. QUAN TRỌNG: Neo ảnh xuống đáy (bottom) để luôn nhìn thấy sóng */
+            background-position: center bottom;
+            /* 4. Luôn tắt lặp lại */
+            background-repeat: no-repeat;
+            /* 5. Xóa 'background-attachment: fixed' để ảnh dãn theo khung div tự nhiên hơn, tránh lỗi méo trên mobile */
+            /* background-attachment: fixed; <--- Xóa dòng này */
+            /* Thêm màu nền dự phòng trùng với màu tím của ảnh */
+            background-color: #2a0b36;
         }
-        
         /* Background image cho phần nút đăng nhập/đăng ký */
+        
         .hero-buttons-container {
             position: relative;
             padding: 2rem;
             border-radius: 20px;
-            background-image: url('/static/web/images/background-gradient.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            /* Thay bằng nền kính mờ nhẹ */
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            /* Tạo hiệu ứng mờ kính sang trọng */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            /* Viền mỏng */
             margin: 2rem auto;
             max-width: 600px;
             box-shadow: 0 10px 40px rgba(107, 44, 145, 0.5);
+        }
+        /* Bạn cũng nên xóa hoặc sửa lại cái ::before gradient nếu thấy nó quá tối */
+        
+        .hero-buttons-container::before {
+            /* Giảm opacity xuống nếu muốn sáng hơn */
+            background: linear-gradient(135deg, rgba(107, 44, 145, 0.3) 0%, rgba(0, 0, 0, 0.3) 100%);
         }
         
         .hero-buttons-container::before {
@@ -54,7 +71,7 @@
             z-index: 0;
         }
         
-        .hero-buttons-container > * {
+        .hero-buttons-container>* {
             position: relative;
             z-index: 1;
         }
@@ -139,7 +156,6 @@
         .feature-card .text-muted {
             color: rgba(255, 255, 255, 0.7) !important;
         }
-
     </style>
 </head>
 
@@ -191,7 +207,7 @@
         if (performance.navigation.type === 1) {
             console.log('Page reloaded - Theme should be purple-black');
         }
-        
+
         // Kiểm tra và apply theme ngay lập tức
         document.addEventListener('DOMContentLoaded', function() {
             const body = document.body;
@@ -213,11 +229,11 @@
             };
             img.src = '/static/web/images/landing-background.jpg';
         }
-        
+
         // Kiểm tra nếu người dùng đã đăng nhập
         const token = localStorage.getItem('token');
         const username = localStorage.getItem('username');
-        
+
         if (token && username) {
             // Nếu đã đăng nhập, thay đổi nút thành "Go to Dashboard"
             const heroButtons = document.getElementById('hero-buttons');
